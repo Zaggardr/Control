@@ -2,6 +2,8 @@
 package com.example.gestion.models;
 
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -65,12 +67,12 @@ public class Commande {
     }
 
 
-    public void calculateMontantTotal() {
-        if (produits != null) {
-            this.montantTotal = (float) produits.stream()
-                    .mapToDouble(Produit::getPrix)
-                    .sum();
-        }
+    public double calculMontantTotal() {
+        List<Produit> produits = new ArrayList<Produit>();
+        for( Produit p : produits )
+            montantTotal += p.getPrix();
+
+        return montantTotal;
     }
 
 }

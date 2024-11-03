@@ -35,15 +35,7 @@ public class FournisseurController {
         model.addAttribute("fournisseurs", fournisseurs);
         return "fournisseurs";
     }
-    @GetMapping("fournisseurs/produits/{id}")
-    public String geetProduits(@PathVariable ("id") Long id, Model model) {
-        Fournisseur fournisseur = fournisseurRepository.findById(id).orElse(null);
-        if (fournisseur != null) {
-            model.addAttribute("produits", fournisseur.getProduits());
-        }
-        return "produits";
 
-    }
 
 //delete
     @GetMapping("fournisseurs/delete")
@@ -75,24 +67,7 @@ public class FournisseurController {
         return"fournisseurs";
     }
 
-//new produit
 
-    @GetMapping("/newp")
-    public String showPage(Model model) {
-        Produit produit = new Produit();
-        model.addAttribute("produit", produit);
-        model.addAttribute("fournisseurs", fournisseurRepository.findAll());
-        return "add-produit";
-    }
-    @PostMapping("/newpp")
-    public String addProduit(@Validated Produit produit, BindingResult result, Model model) {
-        if (result.hasErrors()) {
-            return"add-produit";
-        }
-
-        produitRepository.save(produit);
-        return "index";
-    }
 
     @GetMapping("produits/delete")
     public String deleteProduit(@RequestParam long id) {

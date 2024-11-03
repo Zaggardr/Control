@@ -15,6 +15,7 @@ public class Produit {
 
     private String nom;
     private double prix;
+    private int quantiteDerniereCommande;
 
     @ManyToOne
     @JoinColumn(name = "fournisseur_id")
@@ -68,13 +69,20 @@ public class Produit {
     }
 
     public double calculMontantTotal() {
-        List<Produit> produits = new ArrayList<Produit>();
         double montantTotal = 0;
+        List<Produit> produits = new ArrayList<Produit>();
         for( Produit p : produits )
             montantTotal += p.getPrix();
 
         return montantTotal;
     }
 
+    public int getQuantiteDerniereCommande() {
+        return quantiteDerniereCommande;
+    }
+
+    public void setQuantiteDerniereCommande(int quantiteDerniereCommande) {
+        this.quantiteDerniereCommande = quantiteDerniereCommande;
+    }
 }
 

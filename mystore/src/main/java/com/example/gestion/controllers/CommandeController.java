@@ -12,11 +12,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -59,8 +57,14 @@ public class CommandeController {
         if (result.hasErrors()) {
             return "add-commande";
         }
+        commande.setProduits(produitRepository.findAll());
+        commande.setMontantTotal(0);
+        for(Produit p : commande.getProduits()){
+            commande.setMontantTotal((float) (commande.getMontantTotal()+p.getPrix()*p.getQuantiteDerniereCommande()));
+        }
+        commande.setDate(new Date());
         commandeRepository.save(commande);
-        commande.calculateMontantTotal();
+
         model.addAttribute("commande", commande);
 
         return"commandes";
@@ -78,6 +82,8 @@ public class CommandeController {
 
         return"commandes";
     }
+
+
 
 
 }

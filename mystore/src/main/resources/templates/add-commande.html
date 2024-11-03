@@ -12,31 +12,13 @@
         <h2 class="text-center mb-5">New Commande</h2>
         <form   th:action="@{/newcc}" method="post" th:object="${commande}">
 
-            <div class="row mb-3">
-                <label class="col-sm-4 col-form-label">Date</label>
-                <div class="col-sm-8">
-                    <input type="text" class="form-control" th:value="${T(java.time.LocalDate).now()}" readonly>
-                </div>
-            </div>
 
 
             <div class="row mb-3">
                 <label class="col-sm-4 col-form-label">Montant</label>
                 <div class="col-sm-8">
-                    <input type="number" class="form-control" th:field="${commande.montantTotal}" placeholder="Enter product price" required>
-                    <p th:if="${#fields.hasErrors('montant')}" th:errorclass="text-danger" th:errors="${commande.montantTotal}"></p>
-                </div>
-            </div>
-            <div class="row mb-3">
-                <label class="col-sm-4 col-form-label">Produits</label>
-                <div class="col-sm-8">
-                    <select class="form-select" id="produits" name="produitIds" multiple size="5" required>
-                        <option value="" disabled selected>Choisir un Produit</option>
-                        <option th:each="produit : ${produits}"
-                                th:value="${produit.nom}"
-                                th:text="${produit.nom}"></option>
-
-                    </select>
+                    <input type="number" name="montant" class="form-control" th:field="${commande.montantTotal}" placeholder="Enter product price" required>
+                    <p th:if="${#fields.hasErrors('montantTotal')}" th:errorclass="text-danger" th:errors="${commande.montantTotal}"></p>
                 </div>
             </div>
 
@@ -52,6 +34,28 @@
                     </select>
                 </div>
             </div>
+
+
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">Produits</label>
+                <div class="col-sm-8">
+
+                        <div th:each="produit : ${produits}">
+                            <input type="checkbox" th:field="*{produits}" th:value="${produit.id}">
+                            <label th:text="${produit.nom}"></label>
+
+                            <div class="mt-2">
+                                <label>Quantity:</label>
+                                <input type="number" name="quantities[${produit.id}]" min="1" value="1" class="form-control" style="width: 100px;">
+                            </div>
+                        </div>
+
+
+
+                </div>
+            </div>
+
+
 
 
             <div class="row">
