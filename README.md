@@ -44,7 +44,7 @@ H2 Database - Base de données en mémoire pour le développement et les tests
 Liste des Fournisseurs : Affiche tous les fournisseurs, avec des options pour ajouter, modifier ou supprimer un fournisseur.
 Détail du Fournisseur : Affiche les produits associés à un fournisseur et permet d’ajouter de nouveaux produits.
 Liste des Commandes : Affiche toutes les commandes, avec des options pour créer une nouvelle commande.
-## video
-
+## vidéo
+https://github.com/user-attachments/assets/32e64183-8d5d-4e3c-92e1-1e5d15488590
 ## Auteurs
 Zaggar Driss - Développeur principal
