@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title> New Commande</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/">Gestion des Commandes</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" href="/commandes">Commandes</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/fournisseurs">Fournisseurs</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/produits">Produits</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/newc">Ajouter Commande</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/newp">Ajouter Produit</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/fournisseurs/new">Ajouter Fournisseur</a>
+                </li>
+            </ul>
+
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-4" style="max-width: 1000px;">
+    <div class="container mt-4">
+        <h2 class="text-center mb-4">Nouvelle Commande</h2>
+        <form th:action="@{/newcc}" method="post" th:object="${commande}">
+
+            <div class="mb-3 row">
+                <label class="col-sm-4 col-form-label">Date</label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" th:value="${T(java.time.LocalDate).now()}" readonly>
+                </div>
+            </div>
+
+            <div class="mb-3 row">
+                <label class="col-sm-4 col-form-label">Montant Total</label>
+                <div class="col-sm-8">
+                    <input type="number" id="montantTotal" name="montant" class="form-control" th:field="${commande.montantTotal}" placeholder="Montant total" readonly>
+                </div>
+            </div>
+
+            <div class="mb-3 row">
+                <label class="col-sm-4 col-form-label">Produits</label>
+                <div class="col-sm-8">
+                    <div th:each="produit : ${produits}">
+                        <div class="form-check">
+                            <input type="checkbox" th:field="*{produits}" th:value="${produit.id}" class="form-check-input product-checkbox" data-produit-id="${produit.id}">
+                            <label class="form-check-label" th:text="${produit.nom}"></label>
+                        </div>
+                        <div class="mt-2">
+                            <label>Quantité:</label>
+                            <input type="number" name="quantities[${produit.id}]" min="1" value="1" class="form-control quantity-input" style="width: 100px;" data-produit-id="${produit.id}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-3 row">
+                <label class="col-sm-4 col-form-label">Fournisseur</label>
+                <div class="col-sm-8">
+                    <select class="form-select" id="fournisseurID" name="fournisseur" required>
+                        <option value="" disabled selected>Choisir un fournisseur</option>
+                        <option th:each="fournisseur : ${fournisseurs}" th:value="${fournisseur.id}" th:text="${fournisseur.nom}"></option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="offset-sm-4 col-sm-4 d-grid">
+                    <button type="submit" class="btn btn-primary">Soumettre</button>
+                </div>
+                <div class="col-sm-4 d-grid">
+                    <a class="btn btn-outline-primary" href="/commandes" role="button">Annuler</a>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+    <script>
+        function updateTotal() {
+            const quantities = {};
+
+            document.querySelectorAll('.product-checkbox').forEach((checkbox) => {
+                const produitId = checkbox.getAttribute('data-produit-id');
+                const quantityInput = document.querySelector(`.quantity-input[data-produit-id="${produitId}"]`);
+
+                if (checkbox.checked && quantityInput) {
+                    quantities[produitId] = quantityInput.value;
+                }
+            });
+
+            fetch('/calculateTotal', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: new URLSearchParams(quantities)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('montantTotal').value = data;
+                })
+                .catch(error => console.error('Erreur:', error));
+        }
+
+        document.querySelectorAll('.product-checkbox, .quantity-input').forEach(element => {
+            element.addEventListener('change', updateTotal);
+        });
+    </script>
+</div>
+</body>
+</html>
